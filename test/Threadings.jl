@@ -4,7 +4,7 @@ function f(x)
   # this bit takes about 10 seconds
   local a = 0.0
   for i in 1:10
-    a += sum(cbrt.(sqrt.(rand(100_000))))
+    a += sum(cbrt.(sqrt.(rand(10_00_000))))
   end
   return x + 0 * a
 end
