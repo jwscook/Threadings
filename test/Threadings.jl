@@ -14,7 +14,8 @@ b = mapreduce(f, +, zeros(5), itr)
 ta = @elapsed Threadings.tmapreduce(f, +, zeros(5), itr)
 tb = @elapsed mapreduce(f, +, zeros(5), itr)
 @show ta, tb
-@test ta < tb
+Base.Threads.nthreads() == 1 && @test ta < 1.1*tb
+Base.Threads.nthreads() > 1 && @test ta < tb
 for i in 1:5
   @test a[i] ≈ b[i] rtol=sqrt(eps()) atol=0.0
 end
@@ -25,6 +26,7 @@ b = map(f, itr)
 ta = @elapsed Threadings.tmap(f, itr)
 tb = @elapsed map(f, itr)
 @show ta, tb
-@test ta < tb
+Base.Threads.nthreads() == 1 && @test ta < 1.1*tb
+Base.Threads.nthreads() > 1 && @test ta < tb
 @test a ≈ b rtol=sqrt(eps()) atol=0.0
 end
