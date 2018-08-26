@@ -15,7 +15,7 @@ notifications:
 
 script:
   - export JL_PKG=Threadings
-  - julia --color=yes -e "Pkg.clone(pwd()); Pkg.build(\"${JL_PKG}\"); Pkg.test(\"${JL_PKG}\");"
+  - julia --color=yes -e "Pkg.clone(pwd()); Pkg.build(\"${JL_PKG}\"); Pkg.test(\"${JL_PKG}\", coverage=true);"
 
 after_success:
   - julia -e 'cd(Pkg.dir("Threadings")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
