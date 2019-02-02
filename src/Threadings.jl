@@ -6,13 +6,10 @@ function tmapreduce(f::T, op, itr; init=nothing) where {T<:Function}
   @assert length(itr) > 0
   spinlock = SpinLock()
   popable_itr = Vector(deepcopy(itr)) # vector is poppable
-  output = deepcopy(init) # make a deepcopy of starting value
-  if output == nothing
-    output = f(pop!(popable_itr))
-  end
+  output = init == nothing ? f(pop!(popable_itr)) : deepcopy(init)
   # array of input arguments to f, to store input for each thread
-  inputs = Vector{typeof(itr[1])}(undef, nthreads()) # deprecated soon?
-  @threads for i ∈ eachindex(itr)
+  inputs = Vector{eltype(popable_itr)}(undef, nthreads()) # deprecated soon?
+  @threads for i ∈ eachindex(popable_itr)
     lock(spinlock)
     inputs[threadid()] = pop!(popable_itr)
     unlock(spinlock)
